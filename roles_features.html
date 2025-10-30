@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz de Permissões</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 20px;
+            background: #2563eb;
+            color: white;
+        }
+        
+        .header h1 {
+            margin-bottom: 15px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #15803d;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            color: #374151;
+        }
+        
+        tbody tr:hover {
+            background: #f0f9ff;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background: #f0f9ff;
+        }
+        
+        .permission-dot {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+        
+        .permission-yes {
+            background: #22c55e;
+        }
+        
+        .permission-no {
+            background: #ef4444;
+        }
+        
+        td {
+            text-align: center;
+        }
+        
+        td:first-child, td:nth-child(2) {
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .module-cell {
+            background: #f3f4f6;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .module-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        .module-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        .module-link.no-http {
+            color: #ef4444;
+        }
+
+        .module-link.no-http:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Matriz de Permissões por Role</h1>
+            <div class="controls">
+                <label style="color: white;">Filtrar por módulo:</label>
+                <select id="moduleFilter">
+                    <option value="all">Todos os módulos</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-container">
+            <table id="permissionsTable">
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const roles = [
+            'Root', 'Admin', 'Administrativo', 'Coordenador', 'Supervisor',
+            'Terapeuta ABA', 'Terapeuta Ocupacional', 'Fonoaudiólogo',
+            'Neuropsicólogo', 'Psicopedagogo', 'Musicoterapeuta',
+            'Nutricionista', 'Responsável'
+        ];
+
+        const modules = [
+            {
+                name: 'Clínica', key: 'clinic', url: 'https://app.nonprod.elo-clinic.com/clinics', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [0,0,0,0], 'Supervisor': [0,0,0,0], 'Terapeuta ABA': [0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Usuário', key: 'user', url: 'https://app.nonprod.elo-clinic.com/serviceprovider', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Unidade', key: 'unit', url: 'https://app.nonprod.elo-clinic.com/units', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,0,0,0],
+                    'Terapeuta Ocupacional': [1,0,0,0], 'Fonoaudiólogo': [1,0,0,0],
+                    'Neuropsicólogo': [1,0,0,0], 'Psicopedagogo': [1,0,0,0],
+                    'Musicoterapeuta': [1,0,0,0], 'Nutricionista': [1,0,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Paciente', key: 'patient', url: 'https://app.nonprod.elo-clinic.com/patients', actions: ['list', 'ia', 'get', 'add', 'edit', 'delete', 'documents'],
+                permissions: {
+                    'Root': [1,1,1,1,1,1,1], 'Admin': [1,1,1,1,1,1,1], 'Administrativo': [1,1,1,1,1,1,1],
+                    'Coordenador': [1,1,1,1,1,1,1], 'Supervisor': [1,1,1,1,1,1,1], 'Terapeuta ABA': [1,1,1,1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1,1,1,1], 'Fonoaudiólogo': [1,1,1,1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1,1,1,1], 'Psicopedagogo': [1,1,1,1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1,1,1,1], 'Nutricionista': [1,1,1,1,1,1,1], 'Responsável': [0,0,1,0,0,0,0]
+                }
+            },
+            
+            {
+                name: 'Gerenciamento de Paciente', key: 'patient_management', url: 'https://app.nonprod.elo-clinic.com/patient-management', actions: ['Avaliação', 'Atendimento', 'Plano Terapêutico', 'Formulários', 'Evolução', 'Supervisão', 'Agenda em Lote', 'Converse com EloIA'],
+                permissions: {
+                    'Root': [1,1,1,1,1,1,1,1], 'Admin': [1,1,1,1,0,1,1,1], 'Administrativo': [0,0,1,0,0,0,1,0],
+                    'Coordenador': [1,1,1,1,0,1,1,1], 'Supervisor': [1,1,1,1,0,1,1,1], 'Terapeuta ABA': [1,1,1,1,0,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1,0,1,1,1], 'Fonoaudiólogo': [1,1,1,1,0,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1,0,1,1,1], 'Psicopedagogo': [1,1,1,1,0,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1,0,1,1,1], 'Nutricionista': [1,1,1,1,0,1,1,1], 'Responsável': [0,0,1,0,0,0,0,0]
+                }
+            },
+            {
+                name: 'Prestador de Serviço', key: 'service_provider', url: 'https://app.nonprod.elo-clinic.com/serviceprovider', actions: ['get', 'add', 'edit', 'delete', 'all'],
+                permissions: {
+                    'Root': [1,1,1,1,1], 'Admin': [1,1,1,1,1], 'Administrativo': [1,1,1,1,1],
+                    'Coordenador': [1,1,1,1,0], 'Supervisor': [1,1,1,1,0], 'Terapeuta ABA': [1,0,0,0,0],
+                    'Terapeuta Ocupacional': [1,0,0,0,0], 'Fonoaudiólogo': [1,0,0,0,0],
+                    'Neuropsicólogo': [1,0,0,0,0], 'Psicopedagogo': [1,0,0,0,0],
+                    'Musicoterapeuta': [1,0,0,0,0], 'Nutricionista': [1,0,0,0,0], 'Responsável': [0,0,0,0,0]
+                }
+            },
+            {
+                name: 'Salário do Prestador', key: 'service_provider_salary', url: 'https://app.nonprod.elo-clinic.com/serviceprovider', actions: ['get', 'edit'],
+                permissions: {
+                    'Root': [1,1], 'Admin': [1,1], 'Administrativo': [1,1],
+                    'Coordenador': [1,1], 'Supervisor': [0,0], 'Terapeuta ABA': [0,0],
+                    'Terapeuta Ocupacional': [0,0], 'Fonoaudiólogo': [0,0],
+                    'Neuropsicólogo': [0,0], 'Psicopedagogo': [0,0],
+                    'Musicoterapeuta': [0,0], 'Nutricionista': [0,0], 'Responsável': [0,0]
+                }
+            },
+            {
+                name: 'Responsável', key: 'responsible', url: 'https://app.nonprod.elo-clinic.com/responsibles', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [1], 'Administrativo': [1],
+                    'Coordenador': [1], 'Supervisor': [1], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Permissões', key: 'permissions', url: '/permissions', actions: ['get', 'edit'],
+                permissions: {
+                    'Root': [1,1], 'Admin': [1,1], 'Administrativo': [1,1],
+                    'Coordenador': [0,0], 'Supervisor': [0,0], 'Terapeuta ABA': [0,0],
+                    'Terapeuta Ocupacional': [0,0], 'Fonoaudiólogo': [0,0],
+                    'Neuropsicólogo': [0,0], 'Psicopedagogo': [0,0],
+                    'Musicoterapeuta': [0,0], 'Nutricionista': [0,0], 'Responsável': [0,0]
+                }
+            },
+            {
+                name: 'Configurações da Clínica', key: 'clinic_settings', url: 'https://app.nonprod.elo-clinic.com/clinic-settings', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [0,0,0,0], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [0,0,0,0], 'Supervisor': [0,0,0,0], 'Terapeuta ABA': [0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Critérios Padrão', key: 'standard_criteria', url: 'https://app.nonprod.elo-clinic.com/standard-criteria', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Agendamentos Padrão', key: 'standard_schedules', url: 'https://app.nonprod.elo-clinic.com/standard-schedules', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [0,0,0,0], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [0,0,0,0], 'Supervisor': [0,0,0,0], 'Terapeuta ABA': [0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Formulário', key: 'form', url: 'https://app.nonprod.elo-clinic.com/forms', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Objetivos', key: 'objectives', url: 'https://app.nonprod.elo-clinic.com/objectives', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,0,0],
+                    'Terapeuta Ocupacional': [1,1,0,0], 'Fonoaudiólogo': [1,1,0,0],
+                    'Neuropsicólogo': [1,1,0,0], 'Psicopedagogo': [1,1,0,0],
+                    'Musicoterapeuta': [1,1,0,0], 'Nutricionista': [1,1,0,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Agendamento', key: 'appointment', url: 'https://app.nonprod.elo-clinic.com/agenda', actions: ['get', 'add', 'edit', 'cancel'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,0], 'Terapeuta ABA': [1,1,1,0],
+                    'Terapeuta Ocupacional': [1,1,1,0], 'Fonoaudiólogo': [1,1,1,0],
+                    'Neuropsicólogo': [1,1,1,0], 'Psicopedagogo': [1,1,1,0],
+                    'Musicoterapeuta': [1,1,1,0], 'Nutricionista': [1,1,1,0], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Controle de Horas', key: 'hours_control', url: '/hours-control', actions: ['get', 'report'],
+                permissions: {
+                    'Root': [1,1], 'Admin': [1,1], 'Administrativo': [1,1],
+                    'Coordenador': [1,1], 'Supervisor': [1,1], 'Terapeuta ABA': [0,0],
+                    'Terapeuta Ocupacional': [0,0], 'Fonoaudiólogo': [0,0],
+                    'Neuropsicólogo': [0,0], 'Psicopedagogo': [0,0],
+                    'Musicoterapeuta': [0,0], 'Nutricionista': [0,0], 'Responsável': [0,0]
+                }
+            },
+            {
+                name: 'Folha de Ponto', key: 'timesheet', url: '/timesheet', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [1], 'Administrativo': [1],
+                    'Coordenador': [1], 'Supervisor': [1], 'Terapeuta ABA': [1],
+                    'Terapeuta Ocupacional': [1], 'Fonoaudiólogo': [1],
+                    'Neuropsicólogo': [1], 'Psicopedagogo': [1],
+                    'Musicoterapeuta': [1], 'Nutricionista': [1], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Controle de Email', key: 'email_control', url: '/email-control', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [0], 'Administrativo': [0],
+                    'Coordenador': [0], 'Supervisor': [0], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Controle de IA', key: 'ia_control', url: '/ia-control', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [0], 'Administrativo': [0],
+                    'Coordenador': [0], 'Supervisor': [0], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'IA', key: 'ia', url: '/ia', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [1], 'Administrativo': [0],
+                    'Coordenador': [1], 'Supervisor': [1], 'Terapeuta ABA': [1],
+                    'Terapeuta Ocupacional': [1], 'Fonoaudiólogo': [1],
+                    'Neuropsicólogo': [1], 'Psicopedagogo': [1],
+                    'Musicoterapeuta': [1], 'Nutricionista': [1], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Resposta de Formulário', key: 'response_form', url: '/response-form', actions: ['get', 'add'],
+                permissions: {
+                    'Root': [1,1], 'Admin': [1,1], 'Administrativo': [0,0],
+                    'Coordenador': [1,1], 'Supervisor': [1,1], 'Terapeuta ABA': [1,1],
+                    'Terapeuta Ocupacional': [1,1], 'Fonoaudiólogo': [1,1],
+                    'Neuropsicólogo': [1,1], 'Psicopedagogo': [1,1],
+                    'Musicoterapeuta': [1,1], 'Nutricionista': [1,1], 'Responsável': [0,0]
+                }
+            },
+            {
+                name: 'Atendimento', key: 'attendance', url: '/attendance', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Atendimento ABA', key: 'attendance_aba', url: '/attendance-aba', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Avaliação', key: 'evaluation', url: '/evaluation', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Evolução', key: 'evolution', url: '/evolution', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [0], 'Administrativo': [0],
+                    'Coordenador': [0], 'Supervisor': [0], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Relatório', key: 'report', url: '/report', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [1], 'Administrativo': [0],
+                    'Coordenador': [1], 'Supervisor': [1], 'Terapeuta ABA': [1],
+                    'Terapeuta Ocupacional': [1], 'Fonoaudiólogo': [1],
+                    'Neuropsicólogo': [1], 'Psicopedagogo': [1],
+                    'Musicoterapeuta': [1], 'Nutricionista': [1], 'Responsável': [1]
+                }
+            },
+            {
+                name: 'Ata de Reunião', key: 'meeting_minutes', url: 'https://app.nonprod.elo-clinic.com/meetings', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Hash', key: 'hash', url: '/hash', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [0], 'Administrativo': [0],
+                    'Coordenador': [0], 'Supervisor': [0], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
+                name: 'Bug/Sugestão', key: 'bug_suggestion', url: '/bug-suggestion', actions: ['get', 'add', 'edit', 'delete', 'comment_add', 'like'],
+                permissions: {
+                    'Root': [0,0,0,0,0,0], 'Admin': [1,1,1,1,1,1], 'Administrativo': [0,0,0,0,0,0],
+                    'Coordenador': [0,0,0,0,0,0], 'Supervisor': [0,0,0,0,0,0], 'Terapeuta ABA': [0,0,0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0,0,0], 'Fonoaudiólogo': [0,0,0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0,0,0], 'Psicopedagogo': [0,0,0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0,0,0], 'Nutricionista': [0,0,0,0,0,0], 'Responsável': [0,0,0,0,0,0]
+                }
+            }
+        ];
+
+        function renderTable(filteredModules) {
+            const header = document.getElementById('tableHeader');
+            const body = document.getElementById('tableBody');
+            
+            // Limpar tabela
+            header.innerHTML = '';
+            body.innerHTML = '';
+            
+            // Criar header
+            header.innerHTML = '<th>Módulo</th><th>Ação</th>' + 
+                roles.map(role => `<th>${role}</th>`).join('');
+            
+            // Criar body
+            filteredModules.forEach((module, moduleIdx) => {
+                module.actions.forEach((action, actionIdx) => {
+                    const row = document.createElement('tr');
+                    
+                    if (actionIdx === 0) {
+                        const moduleCell = document.createElement('td');
+                        moduleCell.rowSpan = module.actions.length;
+                        moduleCell.className = 'module-cell';
+
+                        // Criar link clicável para o módulo
+                        const moduleLink = document.createElement('a');
+                        moduleLink.href = module.url;
+                        moduleLink.textContent = module.name;
+                        moduleLink.className = 'module-link';
+
+                        // Adicionar classe 'no-http' se a URL não começar com http:// ou https://
+                        if (!module.url.startsWith('http://') && !module.url.startsWith('https://')) {
+                            moduleLink.classList.add('no-http');
+                        }
+
+                        moduleCell.appendChild(moduleLink);
+                        row.appendChild(moduleCell);
+                    }
+                    
+                    const actionCell = document.createElement('td');
+                    actionCell.textContent = action;
+                    row.appendChild(actionCell);
+                    
+                    roles.forEach(role => {
+                        const permCell = document.createElement('td');
+                        const dot = document.createElement('span');
+                        dot.className = 'permission-dot ' + 
+                            (module.permissions[role][actionIdx] ? 'permission-yes' : 'permission-no');
+                        permCell.appendChild(dot);
+                        row.appendChild(permCell);
+                    });
+                    
+                    body.appendChild(row);
+                });
+            });
+        }
+
+        function initFilters() {
+            const select = document.getElementById('moduleFilter');
+            modules.forEach(module => {
+                const option = document.createElement('option');
+                option.value = module.key;
+                option.textContent = module.name;
+                select.appendChild(option);
+            });
+            
+            select.addEventListener('change', (e) => {
+                const filtered = e.target.value === 'all' 
+                    ? modules 
+                    : modules.filter(m => m.key === e.target.value);
+                renderTable(filtered);
+            });
+        }
+
+        // Inicializar
+        initFilters();
+        renderTable(modules);
+    </script>
+</body>
+</html>
