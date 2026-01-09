@@ -205,13 +205,13 @@
                 }
             },
             {
-                name: 'Unidade', key: 'unit', url: 'https://app.nonprod.elo-clinic.com/units', actions: ['get', 'add', 'edit', 'delete'],
+                name: 'Unidade', key: 'unit', url: 'https://app.nonprod.elo-clinic.com/units', actions: ['get', 'add', 'edit', 'delete', 'all'],
                 permissions: {
-                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
-                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,0,0,0],
-                    'Terapeuta Ocupacional': [1,0,0,0], 'Fonoaudiólogo': [1,0,0,0],
-                    'Neuropsicólogo': [1,0,0,0], 'Psicopedagogo': [1,0,0,0],
-                    'Musicoterapeuta': [1,0,0,0], 'Nutricionista': [1,0,0,0], 'Responsável': [0,0,0,0]
+                    'Root': [1,1,1,1,1], 'Admin': [1,1,1,1,1], 'Administrativo': [1,1,1,1,0],
+                    'Coordenador': [1,1,1,1,0], 'Supervisor': [1,1,1,1,0], 'Terapeuta ABA': [1,0,0,0,0],
+                    'Terapeuta Ocupacional': [1,0,0,0,0], 'Fonoaudiólogo': [1,0,0,0,0],
+                    'Neuropsicólogo': [1,0,0,0,0], 'Psicopedagogo': [1,0,0,0,0],
+                    'Musicoterapeuta': [1,0,0,0,0], 'Nutricionista': [1,0,0,0,0], 'Responsável': [0,0,0,0,0]
                 }
             },
             {
@@ -224,7 +224,6 @@
                     'Musicoterapeuta': [1,1,1,1,1,1,1], 'Nutricionista': [1,1,1,1,1,1,1], 'Responsável': [0,0,1,0,0,0,0]
                 }
             },
-            
             {
                 name: 'Gerenciamento de Paciente', key: 'patient_management', url: 'https://app.nonprod.elo-clinic.com/patient-management', actions: ['Avaliação', 'Atendimento', 'Plano Terapêutico', 'Formulários', 'Evolução', 'Supervisão', 'Agenda em Lote', 'Converse com EloIA'],
                 permissions: {
@@ -243,6 +242,16 @@
                     'Terapeuta Ocupacional': [1,0,0,0,0], 'Fonoaudiólogo': [1,0,0,0,0],
                     'Neuropsicólogo': [1,0,0,0,0], 'Psicopedagogo': [1,0,0,0,0],
                     'Musicoterapeuta': [1,0,0,0,0], 'Nutricionista': [1,0,0,0,0], 'Responsável': [0,0,0,0,0]
+                }
+            },
+            {
+                name: 'Campos Dinâmicos', key: 'dynamic_fields', url: 'https://app.nonprod.elo-clinic.com/dynamic-fields', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [0,0,0,0],
+                    'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
+                    'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
+                    'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
                 }
             },
             {
@@ -286,6 +295,16 @@
                 }
             },
             {
+                name: 'Ajuda do Sistema', key: 'system_help', url: 'https://app.nonprod.elo-clinic.com/system-help', actions: ['get'],
+                permissions: {
+                    'Root': [1], 'Admin': [0], 'Administrativo': [0],
+                    'Coordenador': [0], 'Supervisor': [0], 'Terapeuta ABA': [0],
+                    'Terapeuta Ocupacional': [0], 'Fonoaudiólogo': [0],
+                    'Neuropsicólogo': [0], 'Psicopedagogo': [0],
+                    'Musicoterapeuta': [0], 'Nutricionista': [0], 'Responsável': [0]
+                }
+            },
+            {
                 name: 'Critérios Padrão', key: 'standard_criteria', url: 'https://app.nonprod.elo-clinic.com/standard-criteria', actions: ['get', 'add', 'edit', 'delete'],
                 permissions: {
                     'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
@@ -298,8 +317,8 @@
             {
                 name: 'Agendamentos Padrão', key: 'standard_schedules', url: 'https://app.nonprod.elo-clinic.com/standard-schedules', actions: ['get', 'add', 'edit', 'delete'],
                 permissions: {
-                    'Root': [1,1,1,1], 'Admin': [0,0,0,0], 'Administrativo': [0,0,0,0],
-                    'Coordenador': [0,0,0,0], 'Supervisor': [0,0,0,0], 'Terapeuta ABA': [0,0,0,0],
+                    'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [1,1,1,1],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [0,0,0,0],
                     'Terapeuta Ocupacional': [0,0,0,0], 'Fonoaudiólogo': [0,0,0,0],
                     'Neuropsicólogo': [0,0,0,0], 'Psicopedagogo': [0,0,0,0],
                     'Musicoterapeuta': [0,0,0,0], 'Nutricionista': [0,0,0,0], 'Responsável': [0,0,0,0]
@@ -313,6 +332,26 @@
                     'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
                     'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
                     'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Formulário do Paciente', key: 'patient_form', url: 'https://app.nonprod.elo-clinic.com/patient-form', actions: ['get', 'add', 'edit', 'delete'],
+                permissions: {
+                    'Root': [1,1,1,1], 'Admin': [0,0,0,0], 'Administrativo': [0,0,0,0],
+                    'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
+                    'Terapeuta Ocupacional': [1,1,1,1], 'Fonoaudiólogo': [1,1,1,1],
+                    'Neuropsicólogo': [1,1,1,1], 'Psicopedagogo': [1,1,1,1],
+                    'Musicoterapeuta': [1,1,1,1], 'Nutricionista': [1,1,1,1], 'Responsável': [0,0,0,0]
+                }
+            },
+            {
+                name: 'Resposta de Formulário', key: 'form_answer', url: '/form-answer', actions: ['add', 'edit'],
+                permissions: {
+                    'Root': [1,1], 'Admin': [0,0], 'Administrativo': [0,0],
+                    'Coordenador': [1,1], 'Supervisor': [1,1], 'Terapeuta ABA': [1,1],
+                    'Terapeuta Ocupacional': [1,1], 'Fonoaudiólogo': [1,1],
+                    'Neuropsicólogo': [1,1], 'Psicopedagogo': [1,1],
+                    'Musicoterapeuta': [1,1], 'Nutricionista': [1,1], 'Responsável': [0,0]
                 }
             },
             {
@@ -386,7 +425,7 @@
                 }
             },
             {
-                name: 'Resposta de Formulário', key: 'response_form', url: '/response-form', actions: ['get', 'add'],
+                name: 'Resposta de Formulário (Response Form)', key: 'response_form', url: 'https://app.nonprod.elo-clinic.com/response-form', actions: ['get', 'add'],
                 permissions: {
                     'Root': [1,1], 'Admin': [1,1], 'Administrativo': [0,0],
                     'Coordenador': [1,1], 'Supervisor': [1,1], 'Terapeuta ABA': [1,1],
@@ -416,7 +455,7 @@
                 }
             },
             {
-                name: 'Avaliação', key: 'evaluation', url: '/evaluation', actions: ['get', 'add', 'edit', 'delete'],
+                name: 'Avaliação', key: 'evaluation', url: 'https://app.nonprod.elo-clinic.com/evaluation', actions: ['get', 'add', 'edit', 'delete'],
                 permissions: {
                     'Root': [1,1,1,1], 'Admin': [1,1,1,1], 'Administrativo': [0,0,0,0],
                     'Coordenador': [1,1,1,1], 'Supervisor': [1,1,1,1], 'Terapeuta ABA': [1,1,1,1],
