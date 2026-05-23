@@ -151,12 +151,22 @@
         th:first-child {
             text-align: left;
             padding-left: 20px;
-            min-width: 180px;
+            min-width: 200px;
         }
-        
+
         th:nth-child(2) {
             text-align: left;
-            min-width: 100px;
+            min-width: 110px;
+        }
+
+        th:not(:first-child):not(:nth-child(2)) {
+            width: 72px;
+            min-width: 72px;
+            max-width: 72px;
+            text-align: center;
+            word-break: break-word;
+            font-size: 10px;
+            letter-spacing: 0;
         }
         
         td {
@@ -175,9 +185,22 @@
         }
 
         td:first-child {
-            text-align: center;
-            font-weight: 600;
-            color: #1e293b;
+            text-align: left;
+            padding-left: 16px;
+        }
+
+        .module-cell strong {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .module-cell small {
+            font-size: 10px;
+            color: #94a3b8;
+            letter-spacing: 0.2px;
         }
         
         td:nth-child(2) {
@@ -186,19 +209,13 @@
             font-weight: 500;
         }
         
-        tbody tr:hover {
-            background: #fef9c3 !important;
+        tbody tr:hover td {
+            background: #dbeafe !important;
         }
-        
-        /* Cores alternadas por módulo */
-        .module-row-0 { background: #f0f9ff; }
-        .module-row-1 { background: #f0fdf4; }
-        .module-row-2 { background: #fefce8; }
-        .module-row-3 { background: #fdf4ff; }
-        .module-row-4 { background: #fff7ed; }
-        .module-row-5 { background: #f5f3ff; }
-        .module-row-6 { background: #ecfeff; }
-        .module-row-7 { background: #fef2f2; }
+
+        /* Zebra de colunas (aplicado nas células de permissão) */
+        .col-stripe-a { background: #f1f5f9; }
+        .col-stripe-b { background: #ffffff; }
         
         /* Primeira linha de cada módulo */
         .module-first-row td {
@@ -215,44 +232,24 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 4px;
+            width: 3px;
+            background: #3b82f6;
         }
-        
-        .module-color-0 .module-cell::before { background: #3b82f6; }
-        .module-color-1 .module-cell::before { background: #22c55e; }
-        .module-color-2 .module-cell::before { background: #eab308; }
-        .module-color-3 .module-cell::before { background: #a855f7; }
-        .module-color-4 .module-cell::before { background: #f97316; }
-        .module-color-5 .module-cell::before { background: #8b5cf6; }
-        .module-color-6 .module-cell::before { background: #06b6d4; }
-        .module-color-7 .module-cell::before { background: #ef4444; }
         
         .permission-dot {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
             font-size: 14px;
-            font-weight: bold;
-            transition: transform 0.2s ease;
+            line-height: 1;
         }
-        
-        .permission-dot:hover {
-            transform: scale(1.2);
-        }
-        
+
         .permission-yes {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white;
-            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+            color: #16a34a;
         }
-        
+
         .permission-no {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
         }
         
         .action-badge {
@@ -412,7 +409,7 @@
             <div class="json-info">
                 <span class="json-info-icon">✓</span>
                 <span class="json-info-text">
-                    JSON carregado: <strong id="jsonDate">sys_role_20260329_atualizado.json</strong>
+                    JSON carregado: <strong id="jsonDate">sys_role_20260523_atualizado.json</strong>
                     — Para atualizar, substitua o objeto <code>rolesData</code> no código.
                 </span>
             </div>
@@ -438,91 +435,98 @@
                     "id": 1,
                     "name": "Root",
                     "status": "A",
-                    "authorities": "clinic_get,clinic_add,clinic_edit,clinic_delete,user_get,user_add,user_edit,user_delete,user_self_edit,unit_get,unit_add,unit_edit,unit_delete,unit_all,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_add,service_provider_edit,service_provider_delete,service_provider_all,service_provider_salary_get,service_provider_salary_edit,service_provider_self_edit,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,permissions_get,permissions_edit,clinic_settings_get,clinic_settings_add,clinic_settings_edit,clinic_settings_delete,system_help_get,standard_criteria_get,standard_criteria_add,standard_criteria_edit,standard_criteria_delete,standard_schedules_get,standard_schedules_add,standard_schedules_edit,standard_schedules_delete,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,absence_add,hours_control_get,hours_control_report,timesheet_get,email_control_get,ia_control_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,hash_get,bug_suggestion_get,bug_suggestion_add,bug_suggestion_edit,bug_suggestion_delete,bug_suggestion_comment_add,bug_suggestion_like,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete,import_execute,import_get",
+                    "authorities": "clinic_get,clinic_add,clinic_edit,clinic_delete,user_get,user_add,user_edit,user_delete,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,service_provider_add,service_provider_edit,service_provider_delete,service_provider_all,service_provider_salary_get,service_provider_salary_edit,responsible_get,responsible_add,responsible_edit,responsible_delete,clinic_settings_get,clinic_settings_add,clinic_settings_edit,clinic_settings_delete,system_help_get,standard_criteria_get,standard_criteria_add,standard_criteria_edit,standard_criteria_delete,form_get,form_add,form_edit,form_delete,response_form_get,response_form_add,response_form_edit,response_form_delete,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,hours_control_get,hours_control_report,timesheet_get,clinic_settings_get,ia_get,attendance_get,attendance_add,attendance_edit,attendance_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,unit_all,hash_get,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,service_provider_self_edit,patient_development_get,patient_team_get,patient_team_edit,report_preview_get,absence_add,patient_observation_get,patient_observation_edit,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_finalize,response_evaluation_delete,response_evaluation_delete,import_execute,import_get,dashboard_get,report_get,job_manage",
                     "root": 1
                 },
                 {
                     "id": 2,
                     "name": "Admin",
                     "status": "A",
-                    "authorities": "clinic_get,clinic_add,clinic_edit,clinic_delete,user_get,user_add,user_edit,user_delete,user_self_edit,unit_get,unit_add,unit_edit,unit_delete,unit_all,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_add,service_provider_edit,service_provider_delete,service_provider_all,service_provider_salary_get,service_provider_salary_edit,service_provider_self_edit,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,permissions_get,permissions_edit,clinic_settings_get,clinic_settings_add,clinic_settings_edit,clinic_settings_delete,standard_criteria_get,standard_criteria_add,standard_criteria_edit,standard_criteria_delete,standard_schedules_get,standard_schedules_add,standard_schedules_edit,standard_schedules_delete,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,absence_add,hours_control_get,hours_control_report,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,bug_suggestion_get,bug_suggestion_add,bug_suggestion_edit,bug_suggestion_delete,bug_suggestion_comment_add,bug_suggestion_like,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete,import_execute,import_get",
+                    "authorities": "clinic_get,clinic_add,clinic_edit,clinic_delete,user_get,user_add,user_edit,user_delete,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,service_provider_add,service_provider_edit,service_provider_delete,service_provider_all,service_provider_salary_get,service_provider_salary_edit,responsible_get,responsible_add,responsible_edit,responsible_delete,form_get,form_add,form_edit,form_delete,response_form_get,response_form_add,response_form_edit,response_form_delete,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,hours_control_get,hours_control_report,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,attendance_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,unit_all,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,service_provider_self_edit,patient_development_get,patient_team_get,patient_team_edit,absence_add,patient_observation_get,patient_observation_edit,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_finalize,response_evaluation_delete,response_evaluation_delete,import_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 3,
                     "name": "Administrativo",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_team_get,service_provider_get,service_provider_add,service_provider_edit,service_provider_delete,service_provider_all,service_provider_salary_get,service_provider_salary_edit,service_provider_self_edit,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,permissions_get,permissions_edit,standard_schedules_get,standard_schedules_add,standard_schedules_edit,standard_schedules_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,absence_add,hours_control_get,hours_control_report,timesheet_get",
+                    "authorities": "user_get,user_add,user_edit,user_delete,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,responsible_add,responsible_edit,responsible_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,hours_control_get,hours_control_report,timesheet_get,service_provider_self_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete",
                     "root": 0
                 },
                 {
                     "id": 4,
                     "name": "Coordenador",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_add,service_provider_edit,service_provider_delete,service_provider_salary_get,service_provider_salary_edit,service_provider_self_edit,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,standard_criteria_get,standard_criteria_add,standard_criteria_edit,standard_criteria_delete,standard_schedules_get,standard_schedules_add,standard_schedules_edit,standard_schedules_delete,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,absence_add,hours_control_get,hours_control_report,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete,import_execute,import_get",
+                    "authorities": "user_get,user_add,user_edit,user_delete,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,service_provider_add,service_provider_edit,service_provider_delete,service_provider_salary_get,service_provider_salary_edit,responsible_get,responsible_add,responsible_edit,responsible_delete,form_get,form_add,form_edit,form_delete,response_form_get,response_form_add,response_form_edit,response_form_delete,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,appointment_cancel,hours_control_get,hours_control_report,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,attendance_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,service_provider_self_edit,service_provider_all,patient_development_get,patient_team_get,patient_team_edit,absence_add,patient_observation_get,patient_observation_edit,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_finalize,response_evaluation_delete,response_evaluation_delete,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 5,
                     "name": "Supervisor",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_add,service_provider_edit,service_provider_delete,service_provider_self_edit,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,responsible_get,standard_criteria_get,standard_criteria_add,standard_criteria_edit,standard_criteria_delete,standard_schedules_get,standard_schedules_add,standard_schedules_edit,standard_schedules_delete,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,absence_add,hours_control_get,hours_control_report,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
-                    "root": 0
-                },
-                {
-                    "id": 6,
-                    "name": "Terapeuta ABA",
-                    "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,user_add,user_edit,user_delete,unit_get,unit_add,unit_edit,unit_delete,patient_list,patient_ia,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,dynamic_fields_get,dynamic_fields_add,dynamic_fields_edit,dynamic_fields_delete,service_provider_add,service_provider_edit,service_provider_delete,responsible_get,responsible_add,responsible_edit,responsible_delete,form_get,form_add,form_edit,form_delete,response_form_get,response_form_add,response_form_edit,response_form_delete,objectives_get,objectives_add,objectives_edit,objectives_delete,appointment_get,appointment_add,appointment_edit,hours_control_get,hours_control_report,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,attendance_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,service_provider_self_edit,service_provider_all,patient_development_get,patient_team_get,patient_team_edit,absence_add,patient_observation_get,patient_observation_edit,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_finalize,response_evaluation_delete,response_evaluation_delete,appointment_cancel,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 7,
                     "name": "Terapeuta Ocupacional",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 8,
                     "name": "Fonoaudiólogo",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 9,
                     "name": "Neuropsicólogo",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 10,
                     "name": "Psicopedagogo",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 11,
                     "name": "Musicoterapeuta",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 12,
                     "name": "Nutricionista",
                     "status": "A",
-                    "authorities": "user_get,user_add,user_edit,user_delete,user_self_edit,patient_get,patient_add,patient_edit,patient_delete,patient_documents,patient_observation_get,patient_observation_edit,patient_team_get,service_provider_get,service_provider_self_edit,unit_get,patient_list,patient_ia,form_get,form_add,form_edit,form_delete,patient_form_get,patient_form_add,patient_form_edit,patient_form_delete,form_answer_add,form_answer_edit,objectives_get,objectives_add,appointment_get,appointment_add,appointment_edit,absence_add,timesheet_get,ia_get,response_form_get,response_form_add,response_form_edit,response_form_delete,response_evaluation_get,response_evaluation_add,response_evaluation_edit,response_evaluation_delete,response_evaluation_finalize,attendance_get,attendance_add,attendance_edit,attendance_delete,attendance_aba_get,attendance_aba_add,attendance_aba_edit,attendance_aba_delete,evaluation_get,evaluation_add,evaluation_edit,evaluation_delete,evolution_get,report_get,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,supervision_add,supervision_get,supervision_edit,supervision_delete,therapeutic_plan_add,therapeutic_plan_get,therapeutic_plan_edit,therapeutic_plan_delete,config_session_add,config_session_get,config_session_edit,config_session_delete",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 },
                 {
                     "id": 13,
                     "name": "Responsável",
                     "status": "A",
-                    "authorities": "patient_get,patient_team_get,patient_observation_get,report_get,user_self_edit",
+                    "authorities": "patient_get,patient_development_get",
+                    "root": 0
+                },
+                {
+                    "id": 14,
+                    "name": "Psicólogo",
+                    "status": "A",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
+                    "root": 0
+                },
+                {
+                    "id": 15,
+                    "name": "Fisioterapeuta",
+                    "status": "A",
+                    "authorities": "user_get,patient_get,patient_add,patient_edit,patient_delete,patient_documents,service_provider_get,unit_get,patient_list,patient_ia,response_form_get,objectives_get,objectives_add,appointment_get,timesheet_get,ia_get,attendance_get,attendance_add,attendance_edit,meeting_minutes_get,meeting_minutes_add,meeting_minutes_edit,meeting_minutes_delete,responsible_get,service_provider_self_edit,patient_development_get,therapeutic_plan_get,patient_observation_get,response_evaluation_get,response_evaluation_add,response_evaluation_edit,supervision_get,dashboard_get,report_get",
                     "root": 0
                 }
             ]
@@ -784,7 +788,7 @@
             }
             
             // Renderizar header
-            header.innerHTML = '<th>Módulo</th><th>Ação</th>' + 
+            header.innerHTML = '<th>Módulo</th><th>Ação</th>' +
                 filteredRoles.map(role => `<th title="${role.name}">${abbreviateRoleName(role.name)}</th>`).join('');
             
             // Ordenar módulos
@@ -821,11 +825,8 @@
             
             filteredModules.forEach(moduleKey => {
                 const module = modules[moduleKey];
-                const colorIndex = moduleIndex % 8;
-                
                 module.actions.forEach((action, actionIdx) => {
                     const row = document.createElement('tr');
-                    row.className = `module-row-${colorIndex} module-color-${colorIndex}`;
                     
                     if (actionIdx === 0) {
                         row.classList.add('module-first-row');
@@ -860,13 +861,14 @@
                     row.appendChild(actionCell);
                     
                     // Células de permissões
-                    filteredRoles.forEach(role => {
+                    filteredRoles.forEach((role, roleIdx) => {
                         const permCell = document.createElement('td');
+                        permCell.classList.add(roleIdx % 2 === 0 ? 'col-stripe-a' : 'col-stripe-b');
                         const hasPermission = module.permissions[role.name] && module.permissions[role.name][action];
-                        
+
                         if (hasPermission) totalAssignments++;
-                        
-                        permCell.innerHTML = `<span class="permission-dot ${hasPermission ? 'permission-yes' : 'permission-no'}" 
+
+                        permCell.innerHTML = `<span class="permission-dot ${hasPermission ? 'permission-yes' : 'permission-no'}"
                             title="${role.name}: ${hasPermission ? 'Sim' : 'Não'}">
                             ${hasPermission ? '✓' : '✗'}
                         </span>`;
